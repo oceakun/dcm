@@ -1,49 +1,33 @@
 package terminalplot
 
 import (
+	"dcm/temperature"
 	"fmt"
-	"log"
-	"dcm/process"
+
 	"github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )
 
-func TempTable() {
-	if err := termui.Init(); err != nil {
-		log.Fatalf("failed to initialize termui: %v", err)
-	}
-	defer termui.Close()
-
-	processesInfo := process.GetProcessesInfo()
-
+func CreateTempTable() *widgets.Table {
 	table := widgets.NewTable()
-	table.Title = "Processes"
-	table.Rows = [][]string{
-		{"Name", "CPU%", "Status", "Running", "Username"},
-	}
-
-	for _, pInfo := range processesInfo {
-		runningStatus := "Stopped"
-		if pInfo.IsRunning {
-			runningStatus = "Running"
-		}
-		table.Rows = append(table.Rows, []string{
-			pInfo.Name,
-			fmt.Sprintf("%.5f", pInfo.CPUPercent),
-			pInfo.Status,
-			runningStatus,
-			pInfo.Username,
-		})
-	}
-
+	table.Title = "Temperature Sensors"
+	table.Rows = [][]string{{"Sensor", "Temperature"}}
 	table.TextStyle = termui.NewStyle(termui.ColorWhite)
-	table.RowSeparator = false
-	table.SetRect(0, 0, 100, len(processesInfo)+2) 
-	termui.Render(table)
+	table.RowSeparator = true
+	table.BorderStyle = termui.NewStyle(termui.ColorCyan)
+	UpdateTempTable(table)
+	return table
+}
 
-	for e := range termui.PollEvents() {
-		if e.Type == termui.KeyboardEvent {
-			break
-		}
+func UpdateTempTable(table *widgets.Table) {
+	temperatures := temperature.GetTemperatures()
+
+	newRows := [][]string{{"Sensor", "Temperature"}}
+
+	for sensor, temp := range temperatures {
+		newRows = append(newRows, []string{sensor, fmt.Sprintf("%.1f°C", temp)})
 	}
+
+	table.Rows = newRows
+	table.Title = fmt.Sprintf("Temperature Sensors (%d)", len(temperatures))
 }

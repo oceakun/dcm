@@ -2,26 +2,26 @@ package terminalplot
 
 import (
 	"fmt"
-	"log"
 	"dcm/process"
 	"github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )
 
-func ProcessTable() {
-	if err := termui.Init(); err != nil {
-		log.Fatalf("failed to initialize termui: %v", err)
-	}
-	defer termui.Close()
-
-	processesInfo := process.GetProcessesInfo()
-
+func CreateProcessTable() *widgets.Table {
 	table := widgets.NewTable()
 	table.Title = "Processes"
 	table.Rows = [][]string{
 		{"Name", "CPU%", "Status", "Running", "Username"},
 	}
+	table.TextStyle = termui.NewStyle(termui.ColorWhite)
+	table.RowSeparator = false
+	UpdateProcessTable(table)
+	return table
+}
 
+func UpdateProcessTable(table *widgets.Table) {
+	processesInfo := process.GetProcessesInfo()
+	table.Rows = table.Rows[:1] // Keep only the header
 	for _, pInfo := range processesInfo {
 		runningStatus := "Stopped"
 		if pInfo.IsRunning {
@@ -29,21 +29,10 @@ func ProcessTable() {
 		}
 		table.Rows = append(table.Rows, []string{
 			pInfo.Name,
-			fmt.Sprintf("%.5f", pInfo.CPUPercent),
+			fmt.Sprintf("%.2f", pInfo.CPUPercent),
 			pInfo.Status,
 			runningStatus,
 			pInfo.Username,
 		})
-	}
-
-	table.TextStyle = termui.NewStyle(termui.ColorWhite)
-	table.RowSeparator = false
-	table.SetRect(0, 0, 100, len(processesInfo)+2) 
-	termui.Render(table)
-
-	for e := range termui.PollEvents() {
-		if e.Type == termui.KeyboardEvent {
-			break
-		}
 	}
 }
