@@ -8,24 +8,28 @@ import (
 	"github.com/ssimunic/gosensors"
 )
 
-func GetTemperatures() {
+
+func GetTemperatures() map[string]float64 {
+	temperatures := make(map[string]float64)
 	sensors, err := gosensors.NewFromSystem()
 	if err != nil {
-		log.Fatalf("failed to initialize sensors: %v", err)
+		log.Printf("failed to initialize sensors: %v", err)
+		return temperatures
 	}
 
-	// Iterate over chips
-	for chip, readings := range sensors.Chips {
-		// Chip name
-		fmt.Printf("Chip: %s\n", chip)
-
+	for _, readings := range sensors.Chips {
 		// Iterate over sensor readings for this chip
 		for label, reading := range readings {
 			// Clean up and format the label and reading
 			cleanLabel := strings.TrimSpace(label)
 			cleanReading := strings.TrimSpace(reading)
-			fmt.Printf("  %s: %s\n", cleanLabel, cleanReading)
+			var temp float64
+			_, err := fmt.Sscanf(cleanReading, "%f", &temp)
+			if err == nil {
+				temperatures[cleanLabel] = temp
+			}
 		}
-		fmt.Println()
 	}
+
+	return temperatures
 }
