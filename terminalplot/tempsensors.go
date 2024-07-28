@@ -13,8 +13,11 @@ func CreateTempTable() *widgets.Table {
 	table.Title = "Temperature Sensors"
 	table.Rows = [][]string{{"Sensor", "Temperature"}}
 	table.TextStyle = termui.NewStyle(termui.ColorWhite)
-	table.RowSeparator = true
-	table.BorderStyle = termui.NewStyle(termui.ColorCyan)
+	table.RowSeparator = false
+	table.BorderStyle = termui.NewStyle(termui.ColorBlue)
+	table.RowStyles[0] = termui.NewStyle(termui.ColorGreen, termui.ColorClear, termui.ModifierBold)
+	// Set the title color
+    table.TitleStyle = termui.NewStyle(termui.ColorYellow, termui.ColorClear, termui.ModifierBold)
 	UpdateTempTable(table)
 	return table
 }

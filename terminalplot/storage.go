@@ -5,13 +5,23 @@ import (
 	"log"
 	"math"
 	"dcm/memory"
+	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )
 
 func CreateStoragePieChart() *widgets.PieChart {
 	pc := widgets.NewPieChart()
 	pc.Title = "Storage"
-	pc.AngleOffset = -.5 * math.Pi
+	pc.TitleStyle = ui.NewStyle(ui.ColorGreen, ui.ColorClear, ui.ModifierBold)
+
+	pc.AngleOffset = .5 * math.Pi
+
+	// Set the colors for the pie chart segments
+	pc.Colors = []ui.Color{ui.ColorRed, ui.ColorGreen} // Example colors for used and free storage
+
+	// Set the border color to blue
+	pc.BorderStyle.Fg = ui.ColorBlue
+
 	UpdateStoragePieChart(pc)
 	return pc
 }
