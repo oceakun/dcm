@@ -11,15 +11,18 @@ import (
 func CreateMemoryPlot() *widgets.Plot {
 	plot := widgets.NewPlot()
 	plot.Title = "Virtual Memory Usage"
-	plot.Data = make([][]float64, 2)
+	plot.Data = make([][]float64, 1)  // Only one data series for used memory
 	plot.Data[0] = make([]float64, 1) // Initialize with one data point
-	plot.Data[1] = make([]float64, 1) // Initialize with one data point
-	plot.LineColors[0] = ui.ColorYellow // Used memory
-	plot.LineColors[1] = ui.ColorBlue   // Free memory
+	plot.LineColors[0] = ui.ColorYellow // Used memory line color
 	plot.Marker = widgets.MarkerBraille
+
+	// Set the color of the axis labels and markers
 	plot.AxesColor = ui.ColorWhite
-	// plot.LineStyles[0] = ui.NewStyle(ui.ColorYellow)
-	// plot.LineStyles[1] = ui.NewStyle(ui.ColorBlue)
+
+	// Set border style, including border color
+	plot.BorderStyle.Fg = ui.ColorBlue // Set the border color to blue
+    plot.TitleStyle = ui.NewStyle(ui.ColorGreen, ui.ColorClear, ui.ModifierBold)
+
 	UpdateMemoryPlot(plot) // Initial update to populate with real data
 	return plot
 }
@@ -33,22 +36,16 @@ func UpdateMemoryPlot(plot *widgets.Plot) {
 	
 	// Append new data points
 	plot.Data[0] = append(plot.Data[0], usedGB)
-	plot.Data[1] = append(plot.Data[1], freeGB)
 	
 	// Keep only the last 100 data points
 	if len(plot.Data[0]) > 100 {
 		plot.Data[0] = plot.Data[0][1:]
-		plot.Data[1] = plot.Data[1][1:]
 	}
 	
-	// Ensure we always have at least one data point
-	if len(plot.Data[0]) == 0 {
-		plot.Data[0] = append(plot.Data[0], usedGB)
-		plot.Data[1] = append(plot.Data[1], freeGB)
+	// Update the title with the used memory
+	plot.Title = fmt.Sprintf("Virtual Memory - Used: %.2f GB, Free: %.2f GB",
+		usedGB, freeGB)
 	}
-	
-	plot.Title = fmt.Sprintf("Virtual Memory - Used: %.2f GB, Free: %.2f GB", usedGB, freeGB)
-}
 
 func FetchRAMUsage() (float64, float64, error) {
 	v, err := memory.GetVirtualMemoryStats()
