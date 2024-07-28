@@ -25,28 +25,15 @@ func main() {
 	tempTable := terminalplot.CreateTempTable()
 	memoryPlot := terminalplot.CreateMemoryPlot()
 
+	
 	// Set up grid layout
-
-	// possible layout 1
-	// grid.Set(
-	// 	ui.NewRow(1.0/2,
-	// 		ui.NewCol(1.0/2, processTable),
-	// 		ui.NewCol(1.0/2,
-	// 			ui.NewRow(1.0/2, storagePie),
-	// 			ui.NewRow(1.0/2, tempTable),
-	// 		),
-	// 	),
-	// 	ui.NewRow(1.0/2, memoryPlot),
-	// )
-
-	// possible layout 2
 	grid.Set(
-		ui.NewCol(1.0/2,processTable),
 		ui.NewCol(1.0/2, 
-		ui.NewRow(1.0/3, memoryPlot),
+			ui.NewRow(1.0/3, memoryPlot),
 			ui.NewRow(1.0/3,tempTable),
 			ui.NewRow(1.0/3,storagePie),
 		),
+		ui.NewCol(1.0/2,processTable),
 	)
 
 	// Render the grid
