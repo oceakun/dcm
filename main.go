@@ -1,11 +1,14 @@
 package main
 
 import (
-	"dcm/terminalplot"
 	"log"
 	"time"
 
+	"dcm/terminalplot"
+
+	"github.com/charmbracelet/huh"
 	ui "github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
 )
 
 func main() {
@@ -13,38 +16,49 @@ func main() {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
+	var selectedOption string
+	huh.NewSelect[string]().
+		Title("View : ").
+		Options(
+			huh.NewOption("Temperature Table", "tt"),
+			huh.NewOption("Process Table", "pt"),
+			huh.NewOption("Storage", "st"),
+			huh.NewOption("Virtual Memory", "vm"),
+			huh.NewOption("Live Dashboard", "ldb"),
+		).
+		Value(&selectedOption).Run()
 
-	// Create a grid
 	grid := ui.NewGrid()
 	termWidth, termHeight := ui.TerminalDimensions()
 	grid.SetRect(0, 0, termWidth, termHeight)
 
-	// Create widgets 
-	processTable := terminalplot.CreateProcessTable()
-	storagePie := terminalplot.CreateStoragePieChart()
-	tempTable := terminalplot.CreateTempTable()
-	memoryPlot := terminalplot.CreateMemoryPlot()
+	var activeWidget ui.Drawable
 
-	
-	// Set up grid layout
+	switch selectedOption {
+	case "tt":
+		activeWidget = terminalplot.CreateTempTable()
+	case "pt":
+		activeWidget = terminalplot.CreateInteractiveProcessTable()
+	case "st":
+		activeWidget = terminalplot.CreateStoragePieChart()
+	case "vm":
+		activeWidget = terminalplot.CreateMemoryPlot()
+	case "ldb":
+		terminalplot.CreateLiveDashboard()
+		return 
+	}
+
 	grid.Set(
-		ui.NewCol(1.0/2, 
-			ui.NewRow(1.0/3, memoryPlot),
-			ui.NewRow(1.0/3,tempTable),
-			ui.NewRow(1.0/3,storagePie),
-		),
-		ui.NewCol(1.0/2,processTable),
+		ui.NewRow(1.0, activeWidget),
 	)
 
-	// Render the grid
+	ui.Clear()
 	ui.Render(grid)
 
-	// Set up ticker for updates
+	uiEvents := ui.PollEvents()
 	ticker := time.NewTicker(2 * time.Second)
 	defer ticker.Stop()
 
-	// Event loop
-	uiEvents := ui.PollEvents()
 	for {
 		select {
 		case e := <-uiEvents:
@@ -58,10 +72,16 @@ func main() {
 				ui.Render(grid)
 			}
 		case <-ticker.C:
-			terminalplot.UpdateProcessTable(processTable)
-			terminalplot.UpdateStoragePieChart(storagePie)
-			terminalplot.UpdateTempTable(tempTable)
-			terminalplot.UpdateMemoryPlot(memoryPlot)
+			switch selectedOption {
+			case "tt":
+				terminalplot.UpdateTempTable(activeWidget.(*widgets.Table))
+			case "pt":
+				terminalplot.UpdateInteractiveProcessTable(activeWidget.(*widgets.Table))
+			case "st":
+				terminalplot.UpdateStoragePieChart(activeWidget.(*widgets.PieChart))
+			case "vm":
+				terminalplot.UpdateMemoryPlot(activeWidget.(*widgets.Plot))
+			}
 			ui.Render(grid)
 		}
 	}
