@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/huh"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
+	"github.com/rivo/tview"
 )
 
 func main() {
@@ -16,14 +17,16 @@ func main() {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
+
 	var selectedOption string
 	huh.NewSelect[string]().
 		Title("View : ").
 		Options(
 			huh.NewOption("Temperature Table", "tt"),
-			huh.NewOption("Process Table", "pt"),
-			huh.NewOption("Storage", "st"),
+			// huh.NewOption("Process Table", "pt"),
+			huh.NewOption("Storage Pie", "st"),
 			huh.NewOption("Virtual Memory", "vm"),
+			huh.NewOption("Interactive Process Table", "tpt"),
 			huh.NewOption("Live Dashboard", "ldb"),
 		).
 		Value(&selectedOption).Run()
@@ -37,15 +40,26 @@ func main() {
 	switch selectedOption {
 	case "tt":
 		activeWidget = terminalplot.CreateTempTable()
-	case "pt":
-		activeWidget = terminalplot.CreateInteractiveProcessTable()
+	// case "pt":
+	// 	activeWidget = terminalplot.CreateInteractiveProcessTable()
 	case "st":
 		activeWidget = terminalplot.CreateStoragePieChart()
 	case "vm":
 		activeWidget = terminalplot.CreateMemoryPlot()
 	case "ldb":
 		terminalplot.CreateLiveDashboard()
-		return 
+		return
+	case "tpt":
+		// Handle the tview process table option
+		app := tview.NewApplication()
+		flex := terminalplot.CreateTviewProcessTable()
+
+		go func() {
+			if err := app.SetRoot(flex, true).EnableMouse(true).Run(); err != nil {
+				log.Fatalf("Error running tview application: %v", err)
+			}
+		}()
+		select {} // Block the main goroutine, as tview will take over.
 	}
 
 	grid.Set(
@@ -75,8 +89,8 @@ func main() {
 			switch selectedOption {
 			case "tt":
 				terminalplot.UpdateTempTable(activeWidget.(*widgets.Table))
-			case "pt":
-				terminalplot.UpdateInteractiveProcessTable(activeWidget.(*widgets.Table))
+			// case "pt":
+			// 	terminalplot.UpdateInteractiveProcessTable(activeWidget.(*widgets.Table))
 			case "st":
 				terminalplot.UpdateStoragePieChart(activeWidget.(*widgets.PieChart))
 			case "vm":
@@ -86,3 +100,4 @@ func main() {
 		}
 	}
 }
+
