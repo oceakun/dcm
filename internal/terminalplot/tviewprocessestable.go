@@ -210,7 +210,7 @@
 package terminalplot
 
 import (
-	"dcm/process"
+	"dcm/internal/process"
 	"fmt"
 	"sort"
 	"strings"

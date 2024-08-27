@@ -2,7 +2,7 @@ package terminalplot
 
 import (
 	"fmt"
-	"dcm/process"
+	"dcm/internal/process"
 	"github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )

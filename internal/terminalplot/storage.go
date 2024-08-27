@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"dcm/memory"
+	"dcm/internal/memory"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )

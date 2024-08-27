@@ -3,9 +3,7 @@ package main
 import (
 	"log"
 	"time"
-
-	"dcm/terminalplot"
-
+	"dcm/internal/terminalplot"
 	"github.com/charmbracelet/huh"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
