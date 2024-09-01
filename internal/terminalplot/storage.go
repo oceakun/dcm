@@ -12,7 +12,7 @@ import (
 func CreateStoragePieChart() *widgets.PieChart {
 	pc := widgets.NewPieChart()
 	pc.Title = "Storage"
-	pc.TitleStyle = ui.NewStyle(ui.ColorGreen, ui.ColorClear, ui.ModifierBold)
+	pc.TitleStyle = ui.NewStyle(ui.ColorYellow, ui.ColorClear, ui.ModifierBold)
 
 	pc.AngleOffset = .5 * math.Pi
 
