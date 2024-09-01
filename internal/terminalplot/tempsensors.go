@@ -1,7 +1,7 @@
 package terminalplot
 
 import (
-	"dcm/temperature"
+	"dcm/internal/temperature"
 	"fmt"
 
 	"github.com/gizak/termui/v3"

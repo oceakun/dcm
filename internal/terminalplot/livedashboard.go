@@ -20,14 +20,17 @@ func CreateLiveDashboard() {
 	storagePie := CreateStoragePieChart()
 	tempTable := CreateTempTable()
 	memoryPlot := CreateMemoryPlot()
+	networkInterface := CreateNetworkTable()
 
 	grid.Set(
+		ui.NewRow(2.0/3,
 		ui.NewCol(1.0/2, 
-			ui.NewRow(1.0/3, memoryPlot),
-			ui.NewRow(1.0/3,tempTable),
-			ui.NewRow(1.0/3,storagePie),
+			ui.NewRow(1.0/2, memoryPlot),
+			ui.NewRow(1.0/2,ui.NewCol(1, ui.NewCol(1.0/2,tempTable), ui.NewCol(1.0/2,storagePie))),
 		),
 		ui.NewCol(1.0/2,processTable),
+	),
+		ui.NewCol(1,networkInterface),
 	)
 
 	ui.Render(grid)
