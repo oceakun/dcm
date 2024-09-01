@@ -21,10 +21,10 @@ func main() {
 		Title("View : ").
 		Options(
 			huh.NewOption("Temperature Table", "tt"),
-			// huh.NewOption("Process Table", "pt"),
 			huh.NewOption("Storage Pie", "st"),
 			huh.NewOption("Virtual Memory", "vm"),
 			huh.NewOption("Interactive Process Table", "tpt"),
+			huh.NewOption("Network Interfaces", "ni"),
 			huh.NewOption("Live Dashboard", "ldb"),
 		).
 		Value(&selectedOption).Run()
@@ -38,8 +38,8 @@ func main() {
 	switch selectedOption {
 	case "tt":
 		activeWidget = terminalplot.CreateTempTable()
-	// case "pt":
-	// 	activeWidget = terminalplot.CreateInteractiveProcessTable()
+	case "ni":
+		activeWidget = terminalplot.CreateNetworkTable()
 	case "st":
 		activeWidget = terminalplot.CreateStoragePieChart()
 	case "vm":
@@ -87,8 +87,8 @@ func main() {
 			switch selectedOption {
 			case "tt":
 				terminalplot.UpdateTempTable(activeWidget.(*widgets.Table))
-			// case "pt":
-			// 	terminalplot.UpdateInteractiveProcessTable(activeWidget.(*widgets.Table))
+			case "ni":
+				terminalplot.UpdateNetworkTable(activeWidget.(*widgets.Table))
 			case "st":
 				terminalplot.UpdateStoragePieChart(activeWidget.(*widgets.PieChart))
 			case "vm":

@@ -1,6 +1,6 @@
 module dcm
 
-go 1.20
+go 1.23.0
 
 require github.com/rivo/tview v0.0.0-20240807205129-e4c497cc59ed
 
@@ -45,9 +45,10 @@ require (
 	github.com/charmbracelet/huh v0.5.2
 	github.com/gdamore/tcell/v2 v2.7.4
 	github.com/gizak/termui/v3 v3.1.0
+	github.com/gopacket/gopacket v1.3.0
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.11
 	github.com/ssimunic/gosensors v0.0.0-20170414000417-e7ab9a4e799b
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.24.0 // indirect
 )
