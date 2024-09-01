@@ -21,7 +21,7 @@ func CreateMemoryPlot() *widgets.Plot {
 
 	// Set border style, including border color
 	plot.BorderStyle.Fg = ui.ColorBlue // Set the border color to blue
-    plot.TitleStyle = ui.NewStyle(ui.ColorGreen, ui.ColorClear, ui.ModifierBold)
+    plot.TitleStyle = ui.NewStyle(ui.ColorYellow, ui.ColorClear, ui.ModifierBold)
 
 	UpdateMemoryPlot(plot) // Initial update to populate with real data
 	return plot
